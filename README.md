@@ -8,8 +8,8 @@ Sigue estos pasos para configurar y ejecutar el proyecto en tu entorno local:
 ### 1️⃣ Clonar el repositorio  
 Primero, clona el proyecto desde el repositorio de GitHub y accede a la carpeta del proyecto:  
 ```bash
-git clone https://github.com/tu_usuario/tu_proyecto.git
-cd tu_proyecto
+git clone git@github.com:JHONATAN9A/FincaScore.git
+cd FincaScore
 ```
 ### 2️⃣ Instalar PostgreSQL
 Para que el proyecto funcione correctamente, necesitas instalar PostgreSQL. Puedes descargarlo desde postgresql.org.
