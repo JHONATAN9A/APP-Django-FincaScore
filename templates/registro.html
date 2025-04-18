@@ -1,0 +1,225 @@
+{% load static custom_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - TuFinca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-color: #2c8a4a;
+            --secondary-color: #f8f9fa;
+            --accent-color: #f0ad4e;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .register-container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .register-header h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .register-header img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(44, 138, 74, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .btn-register {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-register:hover {
+            background-color: #237a3f;
+            transform: translateY(-2px);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .extra-options {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .extra-options a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .extra-options a:hover {
+            color: #1a6334;
+            text-decoration: underline;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .divider::before {
+            margin-right: 10px;
+        }
+
+        .divider::after {
+            margin-left: 10px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilo para los errores de formulario */
+        .errorlist {
+            color: #dc3545;
+            padding-left: 0;
+            list-style: none;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 576px) {
+            .register-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <img src="{% static 'images/logo/Logo_TuFinca.jpg' %}" alt="TuFinca Logo">
+            <h2>Crear cuenta</h2>
+            <p class="text-muted">Completa el formulario para registrarte</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                
+                {% if field.name == 'username' %}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    {{ field|add_class:"form-control" }}
+                </div>
+                {% elif field.name == 'email' %}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                    {{ field|add_class:"form-control" }}
+                </div>
+                {% elif field.name == 'password1' or field.name == 'password2' %}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    {{ field|add_class:"form-control" }}
+                </div>
+                {% else %}
+                    {{ field|add_class:"form-control" }}
+                {% endif %}
+                
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                
+                {% if field.errors %}
+                <div class="errorlist">
+                    {% for error in field.errors %}
+                    <div><i class="bi bi-exclamation-circle"></i> {{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-register btn-primary">
+                    <i class="bi bi-person-plus-fill"></i> Crear cuenta
+                </button>
+            </div>
+            
+            <div class="extra-options mt-4">
+                <div class="divider">¿Ya tienes cuenta?</div>
+                <p><a href="{% url 'login' %}">Inicia sesión aquí</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

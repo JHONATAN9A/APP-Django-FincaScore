@@ -1,0 +1,83 @@
+{% load static custom_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Experiencia - {{ finca.lugar }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c8a4a;
+        }
+
+        body {
+            background: #f1f3f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        .form-container h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #237a3f;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2><i class="bi bi-stars me-2"></i>Agregar nueva experiencia en {{ finca.lugar }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Título de la experiencia</label>
+            {{ form.titulo|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            {{ form.descripcion|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Actividad realizada</label>
+            {{ form.actividad|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Imagen</label>
+            {{ form.imagen|add_class:"form-control" }}
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'detalle_experiencias' finca.id %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill me-1"></i> Guardar experiencia
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

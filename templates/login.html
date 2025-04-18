@@ -1,0 +1,191 @@
+{% load static custom_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - TuFinca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-color: #2c8a4a;
+            --secondary-color: #f8f9fa;
+            --accent-color: #f0ad4e;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            max-width: 450px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .login-container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-header img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(44, 138, 74, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #237a3f;
+            transform: translateY(-2px);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .extra-options {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .extra-options a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .extra-options a:hover {
+            color: #1a6334;
+            text-decoration: underline;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .divider::before {
+            margin-right: 10px;
+        }
+
+        .divider::after {
+            margin-left: 10px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+        }
+
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <!-- Agrega tu logo aquí -->
+            <img src="{% static 'images/logo/Logo_TuFinca.jpg' %}" alt="TuFinca Logo">
+            <h2>Iniciar Sesión</h2>
+            <p class="text-muted">Ingresa tus credenciales para acceder</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label for="id_username" class="form-label">Usuario</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    {{ form.username|add_class:"form-control" }}
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="id_password" class="form-label">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    {{ form.password|add_class:"form-control" }}
+                </div>
+            </div>
+            
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-login btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Entrar
+                </button>
+            </div>
+            
+            <div class="extra-options">
+                <a href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
+                <div class="divider">o</div>
+                <p>¿No tienes una cuenta? <a href="{% url 'registro' %}">Regístrate</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

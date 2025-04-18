@@ -1,0 +1,272 @@
+{% load static custom_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Experiencias en {{ finca.lugar }} - TuFinca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2c8a4a;
+            --primary-light: #e9f5ee;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .experience-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .experience-header h1 {
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .experience-header i {
+            margin-right: 0.75rem;
+            font-size: 1.5em;
+        }
+
+        .experience-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .experience-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            border: none;
+        }
+
+        .experience-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .experience-img-container {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .experience-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .experience-card:hover .experience-img {
+            transform: scale(1.05);
+        }
+
+        .experience-body {
+            padding: 1.5rem;
+        }
+
+        .experience-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .experience-description {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: -webkit-box;           /* mantiene el recorte en bloque WebKit */
+            -webkit-box-orient: vertical;   /* orienta el bloque en vertical */
+            -webkit-line-clamp: 3;          /* recorta a 3 líneas (prefijo WebKit) */
+            line-clamp: 3;                  /* ¡propiedad estándar añadida! */
+            overflow: hidden;               /* oculta el desbordamiento */
+        }
+
+        .experience-activity {
+            display: inline-block;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .action-buttons {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #adb5bd;
+            margin-bottom: 1rem;
+        }
+
+        .btn-outline-success {
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-success:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-success {
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-success:hover {
+            background-color: #237a3f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .experience-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .experience-header {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Encabezado -->
+    <div class="experience-header">
+        <h1>
+            <i class="bi bi-stars"></i>
+            Experiencias en {{ finca.lugar }}
+        </h1>
+    </div>
+
+    <!-- Galería de experiencias -->
+    {% if finca.experiencias_finca.all %}
+    <div class="experience-gallery">
+        {% for exp in finca.experiencias_finca.all %}
+        <div class="experience-card">
+            {% if user == finca.propietario or user.is_superuser %}
+            <div class="action-buttons">
+                <a href="{% url 'editar_experiencia' exp.id %}" class="action-btn" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'eliminar_experiencia' exp.id %}" class="action-btn" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+            {% endif %}
+            
+            <div class="experience-img-container">
+                {% if exp.imagen %}
+                <img src="{{ exp.imagen.url }}" alt="{{ exp.titulo }}" class="experience-img">
+                {% else %}
+                <img src="{% static 'img/default-experience.jpg' %}" alt="Sin imagen" class="experience-img">
+                {% endif %}
+            </div>
+            
+            <div class="experience-body">
+                <h3 class="experience-title">{{ exp.titulo }}</h3>
+                <p class="experience-description">{{ exp.descripcion }}</p>
+                <span class="experience-activity">
+                    <i class="bi bi-activity me-1"></i>{{ exp.actividad|truncatechars:30 }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-emoji-frown"></i>
+        <h4 class="text-muted mb-3">No hay experiencias registradas</h4>
+        <p class="text-muted">Aún no se han agregado experiencias a esta finca.</p>
+    </div>
+    {% endif %}
+
+    <!-- Botones de acción -->
+    <div class="text-center mt-4">
+        <a href="{% url 'panel_fincas' %}" class="btn btn-outline-success me-2">
+            <i class="bi bi-arrow-left me-1"></i> Volver al panel
+        </a>
+        {% if user == finca.propietario or user.is_superuser %}
+        <a href="{% url 'agregar_experiencia' finca.id %}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Agregar experiencia
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
