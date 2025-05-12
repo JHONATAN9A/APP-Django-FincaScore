@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ finca.lugar }} - Detalle | TuFinca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c8a4a;
+            --primary-hover: #237a3f;
+            --light-bg: #f8f9fa;
+            --border-radius: 12px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header-title {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .property-badge {
+            background-color: rgba(44, 138, 74, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .property-badge i {
+            margin-right: 0.5rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1rem;
+            color: #6c757d;
+        }
+        
+        .btn-outline-success {
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+        }
+        
+        .btn-outline-success:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .gallery-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-container {
+                height: 300px;
+                border-radius: var(--border-radius) var(--border-radius) 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="header-title"><i class="bi bi-tree-fill me-2"></i>Detalle de Finca</h2>
+        <a href="{% url 'panel_fincas' %}" class="btn btn-outline-success">
+            <i class="bi bi-arrow-left me-1"></i> Volver al panel
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="row g-0">
+            <!-- Galería de imágenes -->
+            <div class="col-lg-5">
+                <div class="gallery-container">
+                    {% if finca.fotografias %}
+                    <img src="{{ finca.fotografias.url }}" alt="{{ finca.lugar }}" class="gallery-img">
+                    {% else %}
+                    <div class="text-center p-4">
+                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No hay imágenes disponibles</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Detalles de la finca -->
+            <div class="col-lg-7">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3 text-success">{{ finca.lugar }}</h3>
+                    
+                    <!-- Badges de características -->
+                    <div class="mb-4">
+                        <span class="property-badge">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <a href="https://maps.google.com/?q={{ finca.latitud }},{{ finca.longitud }}" target="_blank" class="text-decoration-none text-success">
+                                Ver en mapa
+                            </a>
+                        </span>
+                        {% if finca.tiene_parqueadero %}
+                        <span class="property-badge">
+                            <i class="bi bi-p-square-fill"></i> Parqueadero
+                        </span>
+                        {% endif %}
+                        {% if finca.tiene_restaurante %}
+                        <span class="property-badge">
+                            <i class="bi bi-cup-hot-fill"></i> Restaurante
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Detalles principales -->
+                    <div class="mb-4">
+                        <h5 class="mb-3 text-success"><i class="bi bi-info-circle me-2"></i>Información Principal</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="detail-label">Ubicación GPS</p>
+                                <p class="detail-value">{{ finca.latitud|floatformat:4 }}, {{ finca.longitud|floatformat:4 }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="detail-label">Costo por persona</p>
+                                <p class="detail-value">${{ finca.costo_experiencia|floatformat:0 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de experiencias -->
+                    <div class="mb-4">
+                        <h5 class="mb-3 text-success"><i class="bi bi-list-stars me-2"></i>Experiencias disponibles</h5>
+                        
+                        {% if finca.experiencias_finca.all %}
+                            <ul class="list-group list-group-flush">
+                                {% for exp in finca.experiencias_finca.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong class="text-success">{{ exp.titulo }}</strong>
+                                        <p class="mb-1 text-muted">{{ exp.actividad|truncatechars:60 }}</p>
+                                    </div>
+                                    <a href="{% url 'editar_experiencia' exp.id %}" class="btn btn-sm btn-outline-secondary" title="Editar experiencia">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">Esta finca aún no tiene experiencias registradas.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Biografía -->
+                    <div class="mb-4">
+                        <h5 class="mb-3 text-success"><i class="bi bi-person-badge me-2"></i>Sobre el Propietario</h5>
+                        <p class="card-text">{{ finca.biografia_propietario }}</p>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-2 mt-4">
+                        {% if user == finca.propietario or user.is_superuser %}
+                        <a href="{% url 'editar_finca' finca.id %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-pencil me-1"></i> Editar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

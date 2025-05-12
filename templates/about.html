@@ -1,0 +1,130 @@
+{% load static custom_tags%}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca de Mí - TuFinca</title>
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Enlace al CSS personalizado -->
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'Home App' %}">🌿 TuFinca</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'Home App' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Acerca de</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contacto' %}">Contacto</a></li>
+                    {% if user|has_group:"Administrador" %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Administrador</a></li>
+                    {% endif %}
+                    {% if user|has_group:"Administrador" or user|has_group:"Propietario" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'panel_fincas' %}">Mis Fincas</a>
+                    </li>
+                    {% endif %}
+                    {% if not user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Cerrar sesión
+                            </a>
+                            <form id="logout-form" action="{% url 'logout' %}" method="post" class="d-none">
+                            {% csrf_token %}
+                            </form>
+                        </li>
+                    {% endif %}
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido de la página About Me -->
+    <div class="container my-4 flex-grow-1">
+        <h1 class="text-center mb-4">Acerca de nosotros</h1>
+        
+        <!-- Sección de presentación -->
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Imagen personal -->
+                <img src="{% static 'images/about-me.jpg' %}" alt="Acerca de Mí" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6">
+                <!-- Información personal -->
+                <h2>Hola, soy TuFinca</h2>
+                <p class="lead">Bienvenido a TuFinca, un proyecto creado con pasión por la naturaleza y el ecoturismo.</p>
+                <p>Soy un apasionado de la vida en el campo y me encanta compartir la belleza de las fincas con personas como tú. Mi objetivo es ofrecerte una experiencia única, conectándote con la naturaleza y brindándote momentos inolvidables.</p>
+                <p><strong>Mis valores:</strong></p>
+                <ul>
+                    <li>Sostenibilidad y respeto por el medio ambiente.</li>
+                    <li>Calidad y comodidad para nuestros visitantes.</li>
+                    <li>Promoción del turismo rural y local.</li>
+                </ul>
+                <p>¡Espero que disfrutes explorando nuestras fincas tanto como yo disfruto compartiéndolas contigo!</p>
+            </div>
+        </div>
+
+        <!-- Sección de hobbies o intereses -->
+        <div class="mt-5">
+            <h2 class="text-center mb-4">Nuestros Intereses</h2>
+            <div class="row">
+                <!-- Interés 1 -->
+                <div class="col-md-4">
+                    <div class="interest-card">
+                        <img src="{% static 'images/Naturaleza.jpg' %}" alt="Naturaleza" class="img-fluid rounded mb-3">
+                        <h5 class="text-center">Naturaleza</h5>
+                        <p class="text-center">Amantes de los paisajes naturales y la biodiversidad.</p>
+                    </div>
+                </div>
+                <!-- Interés 2 -->
+                <div class="col-md-4">
+                    <div class="interest-card">
+                        <img src="{% static 'images/Cafe.jpg' %}" alt="Café" class="img-fluid rounded mb-3">
+                        <h5 class="text-center">Café</h5>
+                        <p class="text-center">Apasionados por el cultivo y la cultura del café.</p>
+                    </div>
+                </div>
+                <!-- Interés 3 -->
+                <div class="col-md-4">
+                    <div class="interest-card">
+                        <img src="{% static 'images/Viaje.jpg' %}" alt="Viajes" class="img-fluid rounded mb-3">
+                        <h5 class="text-center">Viajes</h5>
+                        <p class="text-center">Exploradores de nuevos lugares y experiencias.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 TuFinca. Todos los derechos reservados.</p>
+        <div class="footer-icons">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-twitter"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+        </div>
+    </footer>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Iconos Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"></script>
+</body>
+</html>

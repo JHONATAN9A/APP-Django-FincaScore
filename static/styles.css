@@ -1,0 +1,176 @@
+/* Estilos generales */
+body {
+    background: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(135deg, #004d40, #00796b);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.navbar-nav .nav-link {
+    color: #fff !important;
+    transition: 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffeb3b !important;
+}
+
+/* Contenedor principal */
+.container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Footer */
+footer {
+    background: #004d40;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+}
+
+.footer-icons a {
+    color: #ffeb3b;
+    margin: 0 10px;
+    transition: 0.3s;
+}
+
+.footer-icons a:hover {
+    color: white;
+}
+
+/* Ejemplo de clase de botón personalizada */
+.btn-custom {
+    background-color: #004d40; /* Verde */
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #004d40; /* Verde un poco más oscuro */
+    color: #ffeb3b; /* Texto amarillo */
+}
+/* Ejemplo de estilo para los títulos H2 */
+h2 {
+    font-family: 'Roboto', sans-serif;    /* Mantener la fuente 'Roboto' */
+    color: transparent;                   /* Hacer el texto transparente para que se vea el degradado */
+    font-size: 2.5rem;                    /* Tamaño de fuente */
+    font-weight: 500;                     /* Peso de fuente */
+    text-transform: none;                 /* Texto sin mayúsculas */
+    margin-top: 1.5rem;                   /* Espacio superior */
+    margin-bottom: 1.5rem;                /* Espacio inferior */
+    background: linear-gradient(to right, #004d40, #00796b); /* Degradado de verde */
+    -webkit-background-clip: text;        /* Aplica el degradado solo al texto */
+    background-clip: text;                /* Para otros navegadores */
+    letter-spacing: 0.5px;                /* Espaciado entre letras */
+    text-align: center;                   /* Alineación central */
+    line-height: 1.2;                     /* Alto de línea */
+}
+
+/*Para la galeria*/
+/* Contenedor principal del slider */
+.gallery-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Envuelve las tarjetas */
+.gallery-wrapper {
+    width: 940px; /* Espacio suficiente para mostrar 3 tarjetas */
+    overflow: hidden;
+}
+
+/* Contenedor de todas las tarjetas */
+.gallery {
+    display: flex;
+    gap: 15px;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Tarjetas */
+.card {
+    min-width: 300px;
+    background: white;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Botones de navegación */
+.prev-btn, .next-btn {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+.prev-btn:hover, .next-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+.experience-card {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+/* Estilos para los títulos h1 */
+h1 {
+    font-family: 'Georgia', serif; /* Fuente elegante */
+    font-size: 2.5rem; /* Tamaño grande */
+    font-weight: bold; /* Negrita */
+    color: #2c3e50; /* Color oscuro y profesional */
+    text-align: center; /* Centrado */
+    margin-bottom: 1.5rem; /* Espaciado inferior */
+    padding-bottom: 0.5rem; /* Espaciado inferior interno */
+    border-bottom: 3px solid #28a745; /* Línea decorativa en la parte inferior */
+    display: inline-block; /* Para que el borde solo ocupe el ancho del texto */
+}
+
+/* Efecto hover para los títulos h1 (opcional) */
+h1:hover {
+    color: #218838; /* Cambia el color al pasar el mouse */
+    border-bottom-color: #218838; /* Cambia el color de la línea al pasar el mouse */
+}
+
+/* Responsive: ajusta el tamaño de h1 en pantallas pequeñas */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem; /* Tamaño más pequeño en móviles */
+    }
+}
+/* En tu archivo styles.css */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}

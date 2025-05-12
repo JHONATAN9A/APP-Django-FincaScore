@@ -1,0 +1,253 @@
+{% load static custom_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Finca - TuFinca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    
+    <style>
+        :root {
+            --primary-color: #2c8a4a;
+            --secondary-color: #f8f9fa;
+            --accent-color: #f0ad4e;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        
+        .form-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-container h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(44, 138, 74, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #237a3f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        #map {
+            height: 350px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .map-coordinates {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 25px;
+            }
+            
+            #map {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2><i class="bi bi-tree-fill me-2"></i> Registrar Nueva Finca</h2>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label for="{{ form.lugar.id_for_label }}" class="form-label">Nombre de la Finca</label>
+                    {{ form.lugar|add_class:"form-control" }}
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="{{ form.fotografias.id_for_label }}" class="form-label">Fotografías</label>
+                    {{ form.fotografias|add_class:"form-control" }}
+                    <small class="text-muted">Puedes seleccionar múltiples imágenes</small>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Ubicación en el Mapa</label>
+                <p class="text-muted mb-2">Haz clic en el mapa para seleccionar la ubicación exacta</p>
+                <div id="map"></div>
+                <div class="row g-3 map-coordinates">
+                    <div class="col-md-6">
+                        <label for="id_latitud" class="form-label">Latitud</label>
+                        <input type="text" id="id_latitud" name="latitud" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_longitud" class="form-label">Longitud</label>
+                        <input type="text" id="id_longitud" name="longitud" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="form-check form-switch mb-3">
+                        {{ form.tiene_parqueadero|add_class:"form-check-input" }}
+                        <label class="form-check-label" for="{{ form.tiene_parqueadero.id_for_label }}">¿Tiene parqueadero?</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        {{ form.tiene_restaurante|add_class:"form-check-input" }}
+                        <label class="form-check-label" for="{{ form.tiene_restaurante.id_for_label }}">¿Tiene restaurante?</label>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="{{ form.costo_experiencia.id_for_label }}" class="form-label">Costo por Persona</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        {{ form.costo_experiencia|add_class:"form-control" }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.biografia_propietario.id_for_label }}" class="form-label">Biografía del Propietario</label>
+                {{ form.biografia_propietario|add_class:"form-control" }}
+                <small class="text-muted">Cuéntanos sobre ti y tu conexión con la finca</small>
+            </div>
+            
+            <div>
+                <a href="{% url 'panel_fincas' %}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle me-1"></i> Guardar Finca
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Configuración inicial del mapa
+            const defaultCoords = [4.3405, -74.3797]; // Coordenadas por defecto (Colombia)
+            const map = L.map('map').setView(defaultCoords, 9);
+            
+            // Capa de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            let marker = null;
+            
+            // Manejar clics en el mapa
+            map.on('click', function(e) {
+                const lat = e.latlng.lat.toFixed(6);
+                const lng = e.latlng.lng.toFixed(6);
+                
+                // Actualizar campos de coordenadas
+                document.getElementById('id_latitud').value = lat;
+                document.getElementById('id_longitud').value = lng;
+                
+                // Mover o colocar marcador
+                if (marker) {
+                    marker.setLatLng(e.latlng);
+                } else {
+                    marker = L.marker(e.latlng, {
+                        draggable: true
+                    }).addTo(map);
+                    
+                    // Permitir arrastrar el marcador
+                    marker.on('dragend', function() {
+                        const pos = marker.getLatLng();
+                        document.getElementById('id_latitud').value = pos.lat.toFixed(6);
+                        document.getElementById('id_longitud').value = pos.lng.toFixed(6);
+                    });
+                }
+            });
+            
+            // Si hay coordenadas iniciales, colocar marcador
+            const initialLat = document.getElementById('id_latitud').value;
+            const initialLng = document.getElementById('id_longitud').value;
+            
+            if (initialLat && initialLng) {
+                const initialCoords = [parseFloat(initialLat), parseFloat(initialLng)];
+                marker = L.marker(initialCoords, {
+                    draggable: true
+                }).addTo(map);
+                map.setView(initialCoords, 13);
+                
+                marker.on('dragend', function() {
+                    const pos = marker.getLatLng();
+                    document.getElementById('id_latitud').value = pos.lat.toFixed(6);
+                    document.getElementById('id_longitud').value = pos.lng.toFixed(6);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -93,7 +93,3 @@ python manage.py runserver
 ```  
 
 El proyecto estará disponible en `http://127.0.0.1:8000/`. 🎉🚀
-
-
-
-
