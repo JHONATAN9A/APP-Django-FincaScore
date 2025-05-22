@@ -1,185 +1,93 @@
-{% load static custom_tags%}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}TuFinca{% endblock %}</title>
-    
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% extends 'base.html' %}
+{% load static custom_tags %}
 
-    <!-- Enlace al CSS personalizado -->
-    <link rel="stylesheet" href="{% static '/styles.css' %}">
-</head>
-<body class="d-flex flex-column min-vh-100">
+{% block title %}Inicio - TuFinca{% endblock %}
 
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'Home App' %}">🌿 TuFinca</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'Home App' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Acerca de</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'contacto' %}">Contacto</a></li>
-                    {% if user|has_group:"Administrador" %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Administrador</a></li>
-                    {% endif %}
-                    {% if user|has_group:"Administrador" or user|has_group:"Propietario" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'panel_fincas' %}">Mis Fincas</a>
-                    </li>
-                    {% endif %}
-                    {% if not user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Cerrar sesión
-                            </a>
-                            <form id="logout-form" action="{% url 'logout' %}" method="post" class="d-none">
-                            {% csrf_token %}
-                            </form>
-                        </li>
-                    {% endif %}
-                    
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- Alerta -->
-    {% if messages %}
-    <div class="container mt-3" id="messages-container">
-        {% for message in messages %}
-        <div class="alert 
-            {% if 'success' in message.tags %}alert-success
-            {% elif 'error' in message.tags %}alert-danger
-            {% elif 'warning' in message.tags %}alert-warning
-            {% elif 'info' in message.tags %}alert-info
-            {% else %}alert-primary{% endif %} 
-            alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    <!-- Contenido dinámico -->
-    <div class="container mt-4 flex-grow-1">
-        {% block content %}
-            <h2 class="mb-4 text-center">Galería de Fincas</h2>
-            <div class="gallery-container">
-                <button class="prev-btn">&#10094;</button> <!-- Botón Izquierdo -->
-                <div class="gallery-wrapper">
-                    <div class="gallery">
-                        <!-- Tarjeta 1 -->
-                        <div class="card">
-                            <img src="{% static 'images/1.jpg' %}" alt="Finca 1">
-                            <h5>Finca Bella Vista</h5>
-                            <p>Una hermosa propiedad rodeada de montañas y aire puro.</p>
-                            <a href="{% url 'mas_detalles' finca_id=4 %}" class="btn btn-custom">Más detalles</a>
-                        </div>
-                        <!-- Tarjeta 2 -->
-                        <div class="card">
-                            <img src="{% static 'images/2.jpg' %}" alt="Finca 2">
-                            <h5>Finca El Edén</h5>
-                            <p>Descubre la tranquilidad en esta finca rodeada de hermosos jardines.</p>
-                            <a href="{% url 'mas_detalles' finca_id=2 %}" class="btn btn-custom">Más detalles</a>
-                        </div>
-                        <!-- Tarjeta 3 -->
-                        <div class="card">
-                            <img src="{% static 'images/3.jpg' %}" alt="Finca 3">
-                            <h5>Finca La Bonita</h5>
-                            <p>Disfruta del amanecer y la paz en un lugar inolvidable.</p>
-                            <a href="{% url 'mas_detalles' finca_id=3 %}" class="btn btn-custom">Más detalles</a>
-                        </div>
-                        <!-- Tarjeta 4 -->
-                        <div class="card">
-                            <img src="{% static 'images/4.jpg' %}" alt="Finca 4">
-                            <h5>Finca Bosque Real</h5>
-                            <p>Conéctate con la naturaleza en esta finca única.</p>
-                            <a href="{% url 'mas_detalles' finca_id=5 %}" class="btn btn-custom">Más detalles</a>
-                        </div>
-                        <!-- Tarjeta 5 -->
-                        <div class="card">
-                            <img src="{% static 'images/5.jpg' %}" alt="Finca 5">
-                            <h5>Finca Los Pinos</h5>
-                            <p>Relájate en un lugar lleno de historia y confort.</p>
-                            <a href="{% url 'mas_detalles' finca_id=6 %}" class="btn btn-custom">Más detalles</a>
-                        </div>
-                        <!-- Tarjeta 6 -->
-                        <div class="card">
-                            <img src="{% static 'images/6.jpg' %}" alt="Finca 6">
-                            <h5>Finca La Esperanza</h5>
-                            <p>Un paraíso para los amantes del café.</p>
-                            <a href="{% url 'mas_detalles' finca_id=7 %}" class="btn btn-custom">Más detalles</a>
-                        </div>
-                    </div>
+{% block content %}
+
+    <h2 class="mb-4 text-center">Galería de Fincas</h2>
+    <div class="gallery-container">
+        <button class="prev-btn">&#10094;</button> <!-- Botón Izquierdo -->
+        <div class="gallery-wrapper">
+            <div class="gallery">
+                <!-- Tarjeta 1 -->
+                <div class="card">
+                    <img src="{% static 'images/1.jpg' %}" alt="Finca 1">
+                    <h5>Finca Bella Vista</h5>
+                    <p>Una hermosa propiedad rodeada de montañas y aire puro.</p>
+                    <a href="{% url 'mas_detalles' finca_id=4 %}" class="btn btn-custom">Más detalles</a>
                 </div>
-                <button class="next-btn">&#10095;</button> <!-- Botón Derecho -->
+                <!-- Tarjeta 2 -->
+                <div class="card">
+                    <img src="{% static 'images/2.jpg' %}" alt="Finca 2">
+                    <h5>Finca El Edén</h5>
+                    <p>Descubre la tranquilidad en esta finca rodeada de hermosos jardines.</p>
+                    <a href="{% url 'mas_detalles' finca_id=2 %}" class="btn btn-custom">Más detalles</a>
+                </div>
+                <!-- Tarjeta 3 -->
+                <div class="card">
+                    <img src="{% static 'images/3.jpg' %}" alt="Finca 3">
+                    <h5>Finca La Bonita</h5>
+                    <p>Disfruta del amanecer y la paz en un lugar inolvidable.</p>
+                    <a href="{% url 'mas_detalles' finca_id=3 %}" class="btn btn-custom">Más detalles</a>
+                </div>
+                <!-- Tarjeta 4 -->
+                <div class="card">
+                    <img src="{% static 'images/4.jpg' %}" alt="Finca 4">
+                    <h5>Finca Bosque Real</h5>
+                    <p>Conéctate con la naturaleza en esta finca única.</p>
+                    <a href="{% url 'mas_detalles' finca_id=5 %}" class="btn btn-custom">Más detalles</a>
+                </div>
+                <!-- Tarjeta 5 -->
+                <div class="card">
+                    <img src="{% static 'images/5.jpg' %}" alt="Finca 5">
+                    <h5>Finca Los Pinos</h5>
+                    <p>Relájate en un lugar lleno de historia y confort.</p>
+                    <a href="{% url 'mas_detalles' finca_id=6 %}" class="btn btn-custom">Más detalles</a>
+                </div>
+                <!-- Tarjeta 6 -->
+                <div class="card">
+                    <img src="{% static 'images/6.jpg' %}" alt="Finca 6">
+                    <h5>Finca La Esperanza</h5>
+                    <p>Un paraíso para los amantes del café.</p>
+                    <a href="{% url 'mas_detalles' finca_id=7 %}" class="btn btn-custom">Más detalles</a>
+                </div>
             </div>
+        </div>
+        <button class="next-btn">&#10095;</button> <!-- Botón Derecho -->
     </div>
-    {% endblock %}
-    <!-- NUEVO CONTENIDO: Experiencias de los visitantes -->
-<div class="container my-4 flex-grow-1">
+<!-- Sección de experiencias -->
     <h2 class="mb-4 text-center">Lo que Dicen Nuestros Visitantes</h2>
-    
+
     <div class="row">
-        <!-- Experiencia 1 -->
         <div class="col-md-4">
             <div class="experience-card">
                 <img src="{% static 'images/7.jpg' %}" alt="Finca 10" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
                 <h5 class="text-center">Carlos y Ana en Finca El Paraíso</h5>
-                <p class="text-center">"Relajarnos en este oasis de tranquilidad rodeado de naturaleza fue una experiencia única. Nos sentimos como en casa."</p>
-                <p class="text-center"><i>- Carlos & Ana, visitantes felices</i></p>
+                <p class="text-center">"Relajarnos en este oasis de tranquilidad rodeado de naturaleza fue una experiencia única."</p>
+                <p class="text-center"><i>- Carlos & Ana</i></p>
             </div>
         </div>
 
-        <!-- Experiencia 2 -->
         <div class="col-md-4">
             <div class="experience-card">
                 <img src="{% static 'images/8.jpg' %}" alt="Finca 11" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
                 <h5 class="text-center">Laura y Javier en Finca San Juan</h5>
-                <p class="text-center">"Pasar un día en este lugar nos permitió reconectarnos con la naturaleza y disfrutar del paisaje como nunca antes."</p>
-                <p class="text-center"><i>- Laura & Javier, aventureros</i></p>
+                <p class="text-center">"Nos reconectamos con la naturaleza y disfrutamos del paisaje como nunca antes."</p>
+                <p class="text-center"><i>- Laura & Javier</i></p>
             </div>
         </div>
 
-        <!-- Experiencia 3 -->
         <div class="col-md-4">
             <div class="experience-card">
                 <img src="{% static 'images/9.jpg' %}" alt="Finca 12" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
                 <h5 class="text-center">Marco en Finca Los Alamos</h5>
-                <p class="text-center">"Mi experiencia fue increíble. Aprendí mucho sobre ecoturismo y disfruté de la paz que ofrece este lugar."</p>
-                <p class="text-center"><i>- Marco, amante del ecoturismo</i></p>
+                <p class="text-center">"Aprendí sobre ecoturismo y disfruté de la paz de este lugar."</p>
+                <p class="text-center"><i>- Marco</i></p>
             </div>
         </div>
     </div>
-</div>
 
-  <!-- Importar el archivo JS -->
-  <script src="{% static 'js/slider.js' %}"></script>
- 
-    <!-- Pie de página -->
-    <footer>
-        <p>&copy; 2025 TuFinca. Todos los derechos reservados.</p>
-        <div class="footer-icons">
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
-        </div>
-    </footer>
 
-    <!-- Iconos Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"></script>
-    <!-- Bootstrap 5 JS bundle (incluye Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/alertas.js' %}"></script>
-</body>
-</html>
+<script src="{% static 'js/slider.js' %}"></script>
+{% endblock %}

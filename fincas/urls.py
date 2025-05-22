@@ -20,6 +20,9 @@ urlpatterns = [
     path('finca/<int:finca_id>/agregar-experiencia/', views.agregar_experiencia, name='agregar_experiencia'),
     path('experiencia/<int:experiencia_id>/editar/', views.editar_experiencia, name='editar_experiencia'),
     path('experiencia/<int:experiencia_id>/eliminar/', views.eliminar_experiencia, name='eliminar_experiencia'),
+    path('evaluador/fincas/', views.lista_fincas_para_evaluar, name='fincas_para_evaluar'),
+    path('evaluador/<int:finca_id>/evaluar/', views.evaluar_finca, name='evaluar_finca'),
+
     
     
 

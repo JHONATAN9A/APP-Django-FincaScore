@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="text-center mb-4">
+    <i class="bi bi-clipboard-check me-2"></i>Fincas disponibles para evaluar
+</h1>
+
+{% if fincas_info %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for item in fincas_info %}
+    <div class="col">
+        <div class="card shadow-sm border-0 h-100 rounded-3 overflow-hidden">
+            {% if item.finca.fotografias %}
+                <img src="{{ item.finca.fotografias.url }}" class="card-img-top" alt="{{ item.finca.lugar }}">
+            {% else %}
+                <img src="{% static 'images/default.jpg' %}" class="card-img-top" alt="Sin imagen">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <i class="bi bi-tree-fill me-1"></i>{{ item.finca.lugar }}
+                </h5>
+                <p class="mb-1">
+                    <i class="bi bi-geo-alt-fill me-1 text-success"></i>
+                    <strong>Ubicación:</strong> {{ item.finca.latitud }}, {{ item.finca.longitud }}
+                </p>
+                <p class="mb-1">
+                    <i class="bi bi-person-fill me-1 text-success"></i>
+                    <strong>Propietario:</strong> {{ item.finca.propietario.get_full_name }}
+                </p>
+                <p class="mb-1">
+                    <i class="bi bi-p-square-fill me-1 text-success"></i>
+                    Parqueadero: {% if item.finca.tiene_parqueadero %}Sí{% else %}No{% endif %}
+                </p>
+                <p class="mb-3">
+                    <i class="bi bi-cup-hot-fill me-1 text-success"></i>
+                    Restaurante: {% if item.finca.tiene_restaurante %}Sí{% else %}No{% endif %}
+                </p>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'mas_detalles' item.finca.id %}" class="btn btn-outline-success">
+                        <i class="bi bi-eye-fill me-1"></i> Ver detalles
+                    </a>
+
+                    {% if item.evaluada %}
+                        <div class="text-end">
+                            <a href="{% url 'evaluar_finca' item.finca.id %}" class="btn btn-outline-secondary btn-sm mb-2">
+                                <i class="bi bi-pencil-square me-1"></i> Editar evaluación
+                            </a><br>
+                            <span class="badge 
+                                {% if item.puntaje >= 4 %}bg-success
+                                {% elif item.puntaje >= 3 %}bg-warning text-dark
+                                {% else %}bg-danger
+                                {% endif %}
+                                mt-1">
+                                <i class="bi bi-bar-chart-line me-1"></i> Puntaje: {{ item.puntaje }}
+                            </span>
+                        </div>
+                    {% else %}
+                    <a href="{% url 'evaluar_finca' item.finca.id %}" class="btn btn-success">
+                        <i class="bi bi-pencil-fill me-1"></i> Evaluar
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <img src="{% static 'images/empty.svg' %}" alt="No hay fincas" class="img-fluid mb-4" style="max-height: 220px;">
+    <h3 class="text-muted">No hay fincas registradas aún</h3>
+    <p class="text-muted">Vuelve más tarde para encontrar fincas disponibles</p>
+</div>
+{% endif %}
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+    .btn-success {
+        background-color: #2c8a4a;
+        border-color: #2c8a4a;
+    }
+    .btn-success:hover {
+        background-color: #237a3f;
+        border-color: #237a3f;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    {# Main Title #}
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-success mb-3">
+            <i class="bi bi-clipboard2-check-fill me-2"></i> Evaluación de Finca
+        </h1>
+        <div class="d-flex justify-content-center align-items-center">
+            <i class="bi bi-geo-alt-fill text-muted me-2"></i>
+            <h3 class="text-muted mb-0">{{ finca.lugar }}</h3>
+        </div>
+    </div>
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        {# Componente Agrícola #}
+        <div class="card mb-4 border-2 border-success shadow-sm">
+            <div class="card-header bg-success bg-gradient text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-flower2 fs-3 me-3"></i>
+                    <h4 class="mb-0">Componente Agrícola</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                {% with agricola="infraestructura manejo_agua fertilizacion control_plagas variedades_cafe asociacion_cultivos rotacion_cultivos" %}
+                <div class="row g-3">
+                    {% for field in form.visible_fields %}
+                        {% if field.name in agricola.split %}
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ field }}
+                                    <label>{{ field.label }}</label>
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in field.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+
+        {# Componente Forestal #}
+        <div class="card mb-4 border-2 border-success shadow-sm">
+            <div class="card-header bg-success bg-gradient text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-tree fs-3 me-3"></i>
+                    <h4 class="mb-0">Componente Forestal</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                {% with forestal="cobertura_forestal cercas_vivas preservacion_bosque uso_plantas_nativas" %}
+                <div class="row g-3">
+                    {% for field in form.visible_fields %}
+                        {% if field.name in forestal.split %}
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ field }}
+                                    <label>{{ field.label }}</label>
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in field.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+
+        {# Componente Hídrico #}
+        <div class="card mb-4 border-2 border-success shadow-sm">
+            <div class="card-header bg-success bg-gradient text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-droplet-half fs-3 me-3"></i>
+                    <h4 class="mb-0">Componente Hídrico</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                {% with hidrico="recoleccion_agua_lluvia conservacion_fuentes sistemas_riego tratamiento_aguas_residuales" %}
+                <div class="row g-3">
+                    {% for field in form.visible_fields %}
+                        {% if field.name in hidrico.split %}
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ field }}
+                                    <label>{{ field.label }}</label>
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in field.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+
+        {# Componente Socioeconómico #}
+        <div class="card mb-4 border-2 border-success shadow-sm">
+            <div class="card-header bg-success bg-gradient text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-people-fill fs-3 me-3"></i>
+                    <h4 class="mb-0">Componente Socioeconómico</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                {% with socio="participacion_comunitaria asistencia_tecnica formalizacion_laboral educacion_caficultor uso_tecnologia" %}
+                <div class="row g-3">
+                    {% for field in form.visible_fields %}
+                        {% if field.name in socio.split %}
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ field }}
+                                    <label>{{ field.label }}</label>
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in field.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+
+        {# Sostenibilidad y Medio Ambiente #}
+        <div class="card mb-4 border-2 border-success shadow-sm">
+            <div class="card-header bg-success bg-gradient text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-recycle fs-3 me-3"></i>
+                    <h4 class="mb-0">Sostenibilidad y Medio Ambiente</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                {% with sostenibilidad="uso_insumos_ecologicos gestion_residuos" %}
+                <div class="row g-3">
+                    {% for field in form.visible_fields %}
+                        {% if field.name in sostenibilidad.split %}
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ field }}
+                                    <label>{{ field.label }}</label>
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in field.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+
+        {# Observaciones generales #}
+        <div class="card mb-4 border-2 border-primary shadow-sm">
+            <div class="card-header bg-primary bg-gradient text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-chat-square-text-fill fs-3 me-3"></i>
+                    <h4 class="mb-0">Observaciones Generales</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-floating">
+                    {{ form.comentario }}
+                    <label>Escribe tus observaciones aquí</label>
+                    {% if form.comentario.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.comentario.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Action Buttons #}
+        <div class="d-flex justify-content-between mt-5">
+            <a href="#" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-arrow-left-circle me-2"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-success btn-lg px-5 shadow">
+                <i class="bi bi-save2-fill me-2"></i> Guardar Evaluación
+            </button>
+        </div>
+    </form>
+
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .form-floating textarea {
+        height: 120px;
+    }
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+</style>
+{% endblock %}

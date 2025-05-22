@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-success mb-3">
+        <i class="bi bi-clipboard2-check-fill me-2"></i> Evaluar Finca
+    </h1>
+    <div class="d-flex justify-content-center align-items-center">
+        <i class="bi bi-geo-alt-fill text-muted me-2"></i>
+        <h3 class="text-muted mb-0">{{ finca.lugar }}</h3>
+    </div>
+</div>
+
+<form method="post" class="needs-validation" novalidate>
+    {% csrf_token %}
+
+    <!-- PUNTAJE GENERAL -->
+    <div class="card mb-4 border-2 border-success shadow-sm">
+        <div class="card-header bg-success bg-gradient text-white py-3">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-star-fill fs-3 me-3"></i>
+                <h4 class="mb-0">Calificación General</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="form-floating">
+                {{ form.puntaje }}
+                <label>{{ form.puntaje.label }}</label>
+                {% if form.puntaje.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.puntaje.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- COMENTARIO -->
+    <div class="card mb-4 border-2 border-primary shadow-sm">
+        <div class="card-header bg-primary bg-gradient text-white py-3">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-chat-square-text-fill fs-3 me-3"></i>
+                <h4 class="mb-0">Comentarios</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="form-floating">
+                {{ form.comentario }}
+                <label>Escribe tus comentarios aquí</label>
+                {% if form.comentario.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.comentario.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="d-flex justify-content-between mt-5">
+        <a href="{% url 'mas_detalles' finca.id %}" class="btn btn-outline-secondary btn-lg px-4">
+            <i class="bi bi-arrow-left-circle me-2"></i> Cancelar
+        </a>
+        <button type="submit" class="btn btn-success btn-lg px-5 shadow">
+            <i class="bi bi-save2-fill me-2"></i> Guardar Evaluación
+        </button>
+    </div>
+</form>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .form-floating textarea {
+        height: 120px;
+    }
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+</style>
+{% endblock %}

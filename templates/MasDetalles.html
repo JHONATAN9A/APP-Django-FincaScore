@@ -1,7 +1,9 @@
+{% extends 'base.html' %}
 {% load static custom_tags %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
+
+{% block title %}Mas Detalles{% endblock %}
+
+{% block content %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de la Finca - TuFinca</title>
@@ -110,50 +112,9 @@
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
     }
     </style>
-</head>
-<body class="d-flex flex-column min-vh-100">
 
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'Home App' %}">🌿 TuFinca</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'Home App' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Acerca de</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'contacto' %}">Contacto</a></li>
-                    {% if user|has_group:"Administrador" %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Administrador</a></li>
-                    {% endif %}
-                    {% if user|has_group:"Administrador" or user|has_group:"Propietario" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'panel_fincas' %}">Mis Fincas</a>
-                    </li>
-                    {% endif %}
-                    {% if not user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Cerrar sesión
-                            </a>
-                            <form id="logout-form" action="{% url 'logout' %}" method="post" class="d-none">
-                            {% csrf_token %}
-                            </form>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Contenido principal -->
-    <div class="container my-4 flex-grow-1">
+
         <!-- Encabezado -->
         <div class="text-center mb-5">
             <h1 class="display-4 fw-bold text-success mb-3">Detalles de la Finca</h1>
@@ -178,7 +139,8 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body">
                         <h2 class="fw-bold mb-3">{{ finca.lugar }}</h2>
-                        <p class="lead text-muted justificado mb-4">{{ finca.experiencias|default:"Una finca con un entorno natural ideal para descansar." }}</p>
+                        <p class="lead text-muted justificado mb-4">{{ finca.descripcion|linebreaksbr|default:"Texto…" }}
+                        </p>
                         
                         <div class="mb-4">
                             <h4 class="h5 fw-bold text-success mb-3">Información General</h4>
@@ -226,7 +188,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Mapa de ubicación -->
         <div class="mt-5 mb-5">
             <h2 class="text-center mb-4 display-5 fw-bold text-success">Ubicación en el Mapa</h2>
@@ -314,14 +275,95 @@
             </div>
             {% endif %}
         </section>
-    </div>
+        <!-- Calificaciones -->
+        <section class="my-5 py-4">
 
-    <!-- Pie de página -->
-    <footer>
-        <p>&copy; 2025 TuFinca. Todos los derechos reservados.</p>
-        <div class="footer-icons">
-        </div>
-    </footer>
+                <div class="text-center mb-5">
+                    <h2 class="display-4 fw-bold text-success mb-3">
+                        <i class="bi bi-star-fill me-2"></i>Evaluaciones Registradas
+                    </h2>
+                    <p class="lead text-muted">Resumen de las calificaciones asignadas por los evaluadores</p>
+                </div>
+
+                {% if finca.evaluaciones.all %}
+                <div class="row g-4">
+                    {% for ev in finca.evaluaciones.all %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-lg h-100 hover-animate">
+                            <div class="card-header bg-gradient-success text-white py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-person-badge me-2"></i>{{ ev.evaluador.get_full_name|default:ev.evaluador.username }}
+                                    </h5>
+                                    <span class="badge bg-white text-success fs-6">{{ ev.puntaje_total }}/100</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-calendar2-check fs-4 text-success"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Fecha evaluación</h6>
+                                        <p class="text-muted small mb-0">{{ ev.fecha|date:"d M Y H:i" }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h6 class="d-flex align-items-center">
+                                        <i class="bi bi-chat-left-text fs-5 text-success me-2"></i>
+                                        Comentarios
+                                    </h6>
+                                    <div class="p-3 bg-light rounded">
+                                        <p class="mb-0">{{ ev.comentario|default:"No se registraron comentarios adicionales." }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 text-end">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock-history me-1"></i>Hace {{ ev.fecha|timesince }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="card border-0 shadow-sm bg-light">
+                        <div class="card-body py-5">
+                            <i class="bi bi-clipboard-x display-4 text-muted mb-4"></i>
+                            <h3 class="text-muted mb-3">Aún no hay evaluaciones</h3>
+                            <p class="text-muted mb-4">Esta finca no ha recibido evaluaciones registradas hasta el momento.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+        </section>
+
+        <style>
+            .hover-animate {
+                transition: all 0.3s ease;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            .hover-animate:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .bg-gradient-success {
+                background: linear-gradient(135deg, #198754 0%, #2ecc71 100%);
+            }
+            .text-justificado {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+            .card-header h5 {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        </style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -409,5 +451,5 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-</body>
-</html>
+
+{% endblock %}

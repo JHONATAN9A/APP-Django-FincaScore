@@ -22,6 +22,7 @@ class FincaRecordModel(models.Model):
         help_text="Una breve reseña del propietario",
         null=True, blank=True
     )
+    descripcion = models.TextField(help_text="Descripción general de la finca", null=True, blank=True)
 
     class Meta:
         db_table = 'finca_record'
@@ -41,3 +42,63 @@ class ExperienciaModel(models.Model):
 
     def __str__(self):
         return f"{self.titulo} - {self.finca.lugar}"
+
+class EvaluacionFinca(models.Model):
+    finca = models.ForeignKey(FincaRecordModel, on_delete=models.CASCADE, related_name='evaluaciones')
+    evaluador = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    # Componente Agrícola
+    infraestructura = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    manejo_agua = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    fertilizacion = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    control_plagas = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    variedades_cafe = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    asociacion_cultivos = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    rotacion_cultivos = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    # Componente Forestal
+    cobertura_forestal = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    cercas_vivas = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    preservacion_bosque = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    uso_plantas_nativas = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    # Componente Hídrico
+    recoleccion_agua_lluvia = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    conservacion_fuentes = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    sistemas_riego = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    tratamiento_aguas_residuales = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    # Componente Socioeconómico
+    participacion_comunitaria = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    asistencia_tecnica = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    formalizacion_laboral = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    educacion_caficultor = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    uso_tecnologia = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    # Sostenibilidad y Medio Ambiente
+    uso_insumos_ecologicos = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    gestion_residuos = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    # Observaciones
+    comentario = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('finca', 'evaluador')
+
+    def puntaje_total(self):
+        campos = [
+            self.infraestructura, self.manejo_agua, self.fertilizacion, self.control_plagas,
+            self.variedades_cafe, self.asociacion_cultivos, self.rotacion_cultivos,
+            self.cobertura_forestal, self.cercas_vivas, self.preservacion_bosque, self.uso_plantas_nativas,
+            self.recoleccion_agua_lluvia, self.conservacion_fuentes, self.sistemas_riego, self.tratamiento_aguas_residuales,
+            self.participacion_comunitaria, self.asistencia_tecnica, self.formalizacion_laboral,
+            self.educacion_caficultor, self.uso_tecnologia,
+            self.uso_insumos_ecologicos, self.gestion_residuos
+        ]
+        return round(sum(campos) / len(campos), 2)
+
+    def __str__(self):
+        return f"{self.finca.lugar} - {self.evaluador.username}"
+
+

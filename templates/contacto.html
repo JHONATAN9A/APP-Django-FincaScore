@@ -1,129 +1,56 @@
-{% load static custom_tags%}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - TuFinca</title>
-    
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+{% extends 'base.html' %}
+{% load static %}
 
-    <!-- Enlace al CSS personalizado -->
-    <link rel="stylesheet" href="{% static '/styles.css' %}">
-</head>
-<body class="d-flex flex-column min-vh-100">
+{% block title %}Contacto - TuFinca{% endblock %}
 
+{% block content %}
 
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'Home App' %}">🌿 TuFinca</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'Home App' %}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Acerca de</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'contacto' %}">Contacto</a></li>
-                    {% if user|has_group:"Administrador" %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Administrador</a></li>
-                    {% endif %}
-                    {% if user|has_group:"Administrador" or user|has_group:"Propietario" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'panel_fincas' %}">Mis Fincas</a>
-                    </li>
-                    {% endif %}
-                    {% if not user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Cerrar sesión
-                            </a>
-                            <form id="logout-form" action="{% url 'logout' %}" method="post" class="d-none">
-                            {% csrf_token %}
-                            </form>
-                        </li>
-                    {% endif %}
-                    
-                </ul>
-            </div>
+<h1 class="text-center mb-4">Contacto</h1>
+
+    <!-- Sección de información de contacto -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h2>Información de Contacto</h2>
+            <p class="lead">¡Estamos aquí para ayudarte! Contáctanos para más información.</p>
+            <ul class="list-unstyled">
+                <li><strong>Dirección:</strong> Calle 17, Fusagasugá, Colombia</li>
+                <li><strong>Teléfono:</strong> +57 3142828269</li>
+                <li><strong>Email:</strong> info@tufinca.com</li>
+                <li><strong>Horario de atención:</strong> Lunes a Viernes, 8:00 AM - 6:00 PM</li>
+            </ul>
         </div>
-    </nav>
-
-    <!-- Contenido de la página de Contacto -->
-    <div class="container my-4 flex-grow-1">
-        <h1 class="text-center mb-4">Contacto</h1>
-        
-        <!-- Sección de información de contacto -->
-        <div class="row mb-5">
-            <div class="col-md-6">
-                <h2>Información de Contacto</h2>
-                <p class="lead">¡Estamos aquí para ayudarte! Contáctanos para más información.</p>
-                <ul class="list-unstyled">
-                    <li><strong>Dirección:</strong> Calle 17, Fusagasugá, Colombia</li>
-                    <li><strong>Teléfono:</strong> +57 3142828269</li>
-                    <li><strong>Email:</strong> info@tufinca.com</li>
-                    <li><strong>Horario de atención:</strong> Lunes a Viernes, 8:00 AM - 6:00 PM</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <!-- Mapa de ubicación -->
-                <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d3760.6233425198307!2d-74.36695808143902!3d4.335519296617106!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sco!4v1742487276269!5m2!1ses-419!2sco" 
-                width="600" 
-                height="450" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
+        <div class="col-md-6">
+            <!-- Mapa de ubicación -->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d3760.6233425198307!2d-74.36695808143902!3d4.335519296617106!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sco!4v1742487276269!5m2!1ses-419!2sco" 
+                width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade">
-
-                </iframe>
-            </div>
-        </div>
-
-        <!-- Formulario de contacto -->
-        <div class="row">
-            <div class="col-md-8 mx-auto">
-                <h2 class="text-center mb-4">Envíanos un Mensaje</h2>
-                <form action="#" method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="mensaje" class="form-label">Mensaje</label>
-                        <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-custom">Enviar Mensaje</button>
-                    </div>
-                </form>
-            </div>
+            </iframe>
         </div>
     </div>
 
-    <!-- Pie de página -->
-    <footer>
-        <p>&copy; 2025 TuFinca. Todos los derechos reservados.</p>
-        <div class="footer-icons">
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
+    <!-- Formulario de contacto -->
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2 class="text-center mb-4">Envíanos un Mensaje</h2>
+            <form action="#" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-custom">Enviar Mensaje</button>
+                </div>
+            </form>
         </div>
-    </footer>
+    </div>
 
-    <!-- Scripts de Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Iconos Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"></script>
-</body>
-</html>
+{% endblock %}

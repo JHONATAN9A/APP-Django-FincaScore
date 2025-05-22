@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
-from .models import FincaRecordModel,ExperienciaModel
-from .forms import FincaForm, RegistroForm,ExperienciaForm
+from .models import FincaRecordModel,ExperienciaModel, EvaluacionFinca
+from .forms import FincaForm, RegistroForm,ExperienciaForm,EvaluacionFincaForm
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 
 def lista_fincas(request):
@@ -174,3 +174,41 @@ def lista_fincas(request):
     fincas = FincaRecordModel.objects.all()
     print("✔️ Fincas:", fincas)  # Debug temporal
     return render(request, 'index.html', {'fincas': fincas})
+
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Evaluador').exists())
+def evaluar_finca(request, finca_id):
+    finca = get_object_or_404(FincaRecordModel, id=finca_id)
+
+    evaluacion_existente = EvaluacionFinca.objects.filter(finca=finca, evaluador=request.user).first()
+
+    if request.method == 'POST':
+        form = EvaluacionFincaForm(request.POST, instance=evaluacion_existente)
+        if form.is_valid():
+            evaluacion = form.save(commit=False)
+            evaluacion.finca = finca
+            evaluacion.evaluador = request.user
+            evaluacion.save()
+            return redirect('fincas_para_evaluar')  
+    else:
+        form = EvaluacionFincaForm(instance=evaluacion_existente)
+
+    return render(request, 'evaluador/evaluar_finca.html', {'form': form, 'finca': finca})
+
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Evaluador').exists())
+def lista_fincas_para_evaluar(request):
+    fincas = FincaRecordModel.objects.all()
+    fincas_info = []
+
+    for finca in fincas:
+        evaluacion = EvaluacionFinca.objects.filter(finca=finca, evaluador=request.user).first()
+        fincas_info.append({
+            'finca': finca,
+            'evaluada': bool(evaluacion),
+            'puntaje': evaluacion.puntaje_total() if evaluacion else None
+        })
+
+    return render(request, 'evaluador/fincas_disponibles.html', {'fincas_info': fincas_info})
