@@ -14,7 +14,7 @@ cd FincaScore
 ### 2️⃣ Instalar PostgreSQL
 Para que el proyecto funcione correctamente, necesitas instalar PostgreSQL. Puedes descargarlo desde postgresql.org.
 
-## 3️⃣ Crear y activar un entorno virtual  
+### 3️⃣ Crear y activar un entorno virtual  
 Crea un entorno virtual para manejar las dependencias del proyecto sin afectar otros proyectos en tu sistema:  
 
 ```bash  
@@ -34,7 +34,7 @@ Luego, actívalo según tu sistema operativo:
 
 ---  
 
-## 4️⃣ Instalar dependencias  
+### 4️⃣ Instalar dependencias  
 Con el entorno virtual activado, instala las dependencias del proyecto:  
 
 ```bash  
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 ---  
 
-## 5️⃣ Configurar las variables de entorno  
+### 5️⃣ Configurar las variables de entorno  
 Crea un archivo `.env` en la raíz del proyecto:  
 
 ```bash  
@@ -64,7 +64,7 @@ DB_PORT=
 
 ---  
 
-## 6️⃣ Aplicar migraciones (opcional)  
+### 6️⃣ Aplicar migraciones (opcional)  
 Ejecuta los siguientes comandos para crear la estructura de la base de datos:  
 
 ```bash  
@@ -74,7 +74,7 @@ python manage.py migrate
 
 ---  
 
-## 7️⃣ Crear un superusuario (opcional)  
+### 7️⃣ Crear un superusuario (opcional)  
 Si necesitas acceso al panel de administración de Django, crea un superusuario con:  
 
 ```bash  
@@ -85,7 +85,7 @@ Sigue las instrucciones y proporciona un nombre de usuario, correo y contraseña
 
 ---  
 
-## 8️⃣ Iniciar el servidor de desarrollo  
+### 8️⃣ Iniciar el servidor de desarrollo  
 Ejecuta el siguiente comando para levantar el servidor:  
 
 ```bash  
