@@ -1,0 +1,79 @@
+{% load static %}
+{% for finca in fincas %}
+<div class="card mb-4 shadow-sm border-0 rounded-4 hover-animate" style="overflow: hidden;">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if finca.fotografias %}
+                <img src="{{ finca.fotografias.url }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ finca.lugar }}" style="min-height: 280px;">
+            {% else %}
+                <img src="{% static 'images/default.jpg' %}" class="img-fluid h-100 w-100 object-fit-cover" alt="Sin imagen" style="min-height: 280px;">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body h-100 d-flex flex-column p-4">
+                <div class="mb-3">
+                    <h4 class="card-title text-success fw-bold mb-3">
+                        <i class="bi bi-tree-fill me-2" style="font-size: 1.2em;"></i>{{ finca.lugar }}
+                    </h4>
+
+                    <!-- ⭐ Calificación promedio -->
+                    <div class="d-flex align-items-center mb-3">
+                        {% if finca.total_comentarios > 0 %}
+                            <span class="text-warning me-2" style="font-size: 1.1em;">
+                                {% for i in "12345" %}
+                                    <i class="bi bi-star{% if forloop.counter <= finca.promedio_comentarios|floatformat:0 %}-fill{% else %}-half text-muted{% endif %}"></i>
+                                {% endfor %}
+                            </span>
+                            <span class="text-muted small">
+                                {{ finca.promedio_comentarios|floatformat:1 }} <small>({{ finca.total_comentarios }})</small>
+                            </span>
+                        {% else %}
+                            <span class="badge bg-light text-muted">Sin calificaciones</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="card-text text-muted text-justificado mb-4">
+                        {{ finca.descripcion|default:"Sin descripción"|truncatewords:25 }}
+                    </p>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-geo-alt-fill text-success me-3" style="font-size: 1.2em;"></i>
+                        <div>
+                            <small class="text-muted">Lat: {{ finca.latitud }}, Long: {{ finca.longitud }}</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-badge-fill text-success me-3" style="font-size: 1.2em;"></i>
+                        <div>
+                            <small class="text-muted">{{ finca.propietario.get_full_name|default:finca.propietario.username }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto">
+                    <div class="mb-3 d-flex gap-2">
+                        <span class="badge rounded-pill {% if finca.tiene_parqueadero %}bg-success bg-opacity-10 text-success border border-success{% else %}bg-light text-muted{% endif %} p-2">
+                            <i class="bi bi-p-square-fill me-1" style="font-size: 1em;"></i>
+                            {{ finca.tiene_parqueadero|yesno:"Parqueadero,No" }}
+                        </span>
+                        <span class="badge rounded-pill {% if finca.tiene_restaurante %}bg-success bg-opacity-10 text-success border border-success{% else %}bg-light text-muted{% endif %} p-2">
+                            <i class="bi bi-cup-hot-fill me-1" style="font-size: 1em;"></i>
+                            {{ finca.tiene_restaurante|yesno:"Restaurante,No" }}
+                        </span>
+                    </div>
+
+                    <div class="text-end">
+                        <a href="{% url 'mas_detalles' finca_id=finca.id %}" class="btn btn-success hover-animate px-3">
+                            <i class="bi bi-eye-fill me-2"></i> Ver detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-warning text-center hover-animate py-3">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontraron fincas
+</div>
+{% endfor %}

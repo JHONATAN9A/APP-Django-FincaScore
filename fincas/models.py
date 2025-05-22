@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Avg
 
 class FincaRecordModel(models.Model):
     propietario = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -28,6 +29,15 @@ class FincaRecordModel(models.Model):
         db_table = 'finca_record'
         verbose_name = 'Registro Finca'
         verbose_name_plural = 'Registros Fincas'
+    
+    @property
+    def promedio_comentarios(self):
+        promedio = self.comentarios.aggregate(prom=Avg('puntaje'))['prom']
+        return round(promedio or 0, 1)
+
+    @property
+    def total_comentarios(self):
+        return self.comentarios.count()   
     
 
     def __str__(self):
@@ -101,4 +111,17 @@ class EvaluacionFinca(models.Model):
     def __str__(self):
         return f"{self.finca.lugar} - {self.evaluador.username}"
 
+class ComentarioFinca(models.Model):
+    finca = models.ForeignKey(FincaRecordModel, on_delete=models.CASCADE, related_name='comentarios')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    puntaje = models.PositiveSmallIntegerField(choices=[(i, f'{i} estrellas') for i in range(1, 6)])
+    comentario = models.TextField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)  # ✅ NUEVO campo
+
+    class Meta:
+        unique_together = ('finca', 'usuario')
+
+    def __str__(self):
+        return f"{self.usuario.username} → {self.puntaje}⭐"
 

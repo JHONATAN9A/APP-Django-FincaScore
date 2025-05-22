@@ -1,5 +1,5 @@
 from django import forms
-from .models import FincaRecordModel, ExperienciaModel, EvaluacionFinca
+from .models import FincaRecordModel, ExperienciaModel, EvaluacionFinca, ComentarioFinca
 from django.contrib.auth.models import User
 
 ROLES = [
@@ -111,3 +111,19 @@ class EvaluacionFincaForm(forms.ModelForm):
             })
         }
 
+class ComentarioFincaForm(forms.ModelForm):
+    puntaje = forms.ChoiceField(
+        choices=[(i, f'{i} Estrella{"s" if i > 1 else ""}') for i in range(1, 6)],
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'})
+    )
+
+    class Meta:
+        model = ComentarioFinca
+        fields = ['puntaje', 'comentario']
+        widgets = {
+            'comentario': forms.Textarea(attrs={
+                'rows': 3,
+                'class': 'form-control',
+                'placeholder': 'Escribe tu opinión...'
+            }),
+        }

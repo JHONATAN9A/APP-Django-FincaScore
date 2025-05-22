@@ -340,6 +340,171 @@
                 </div>
                 {% endif %}
         </section>
+        <section class="my-5 py-5 bg-light rounded-3">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold text-success mb-3">
+                    <i class="bi bi-chat-square-quote-fill me-2"></i>Opiniones de Usuarios
+                </h2>
+                <p class="lead text-muted">Los usuarios registrados pueden calificar y editar su opinión sobre esta finca.</p>
+            </div>
+
+            {% if user.is_authenticated and user|has_group:"Cliente" %}
+                {% if comentario_existente %}
+                    <!-- ✅ Tarjeta de comentario existente -->
+                    <div class="card mb-4 shadow-sm hover-animate border-success border-2">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 text-success">
+                                    <i class="bi bi-chat-dots-fill me-2"></i>Tu comentario
+                                </h5>
+                                <button class="btn btn-sm btn-outline-success hover-animate" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#editarComentario" 
+                                        aria-expanded="false" aria-controls="editarComentario">
+                                    <i class="bi bi-pencil-square me-1"></i>Editar
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <span class="text-warning fs-5">
+                                    {% for i in rango_estrellas %}
+                                        <i class="bi bi-star{% if i <= comentario_existente.puntaje %}-fill{% else %} text-white-50{% endif %}"></i>
+                                    {% endfor %}
+                                    <span class="ms-2 text-muted small">({{ comentario_existente.puntaje }} de 5)</span>
+                                </span>
+                            </div>
+                            <p class="text-muted text-justificado mb-0">{{ comentario_existente.comentario|default:"Sin comentario." }}</p>
+                            <small class="text-muted mt-2 d-block">
+                                Última edición: {{ comentario_existente.fecha_actualizacion|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- ✅ Formulario colapsable para editar -->
+                    <div class="collapse" id="editarComentario">
+                        <div class="card mb-5 shadow-sm hover-animate">
+                            <div class="card-body">
+                                <h5 class="text-success mb-4">
+                                    <i class="bi bi-pencil-fill me-2"></i>Editar tu comentario
+                                </h5>
+                                <form method="post" novalidate>
+                                    {% csrf_token %}
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Calificación:</label><br>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            {% for radio in form_comentario.puntaje %}
+                                            <div class="form-check">
+                                                {{ radio.tag }}
+                                                <label class="form-check-label d-flex align-items-center" for="{{ radio.id_for_label }}">
+                                                    <span class="text-warning me-2">
+                                                        <i class="bi bi-star-fill"></i>
+                                                    </span>
+                                                    {{ radio.choice_label }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Comentario:</label>
+                                        {{ form_comentario.comentario }}
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <button type="button" class="btn btn-outline-secondary hover-animate" 
+                                                data-bs-toggle="collapse" data-bs-target="#editarComentario">
+                                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                                        </button>
+                                        <button type="submit" class="btn btn-success hover-animate">
+                                            <i class="bi bi-save-fill me-1"></i> Guardar cambios
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <!-- ✅ Formulario nuevo si no existe comentario -->
+                    <div class="card mb-5 shadow-sm hover-animate">
+                        <div class="card-body">
+                            <h4 class="text-success mb-4">
+                                <i class="bi bi-pencil-fill me-2"></i>Deja tu comentario
+                            </h4>
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Calificación:</label><br>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        {% for radio in form_comentario.puntaje %}
+                                        <div class="form-check">
+                                            {{ radio.tag }}
+                                            <label class="form-check-label d-flex align-items-center" for="{{ radio.id_for_label }}">
+                                                <span class="text-warning me-2">
+                                                    <i class="bi bi-star-fill"></i>
+                                                </span>
+                                                {{ radio.choice_label }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Comentario:</label>
+                                    {{ form_comentario.comentario }}
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success hover-animate">
+                                        <i class="bi bi-send-fill me-1"></i> Enviar comentario
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-warning text-center hover-animate" role="alert">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                        <div>
+                            <strong>¿Quieres compartir tu opinión?</strong> 
+                            <a href="{% url 'login' %}" class="alert-link">Inicia sesión</a> como cliente para dejar tu calificación.
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if comentarios_usuarios %}
+                <section class="mt-5">
+                    <h3 class="text-success mb-4 text-center">
+                        <i class="bi bi-chat-square-text-fill me-2"></i>Comentarios de otros usuarios
+                    </h3>
+                    <div class="row g-4">
+                        {% for c in comentarios_usuarios %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm hover-animate">
+                                <div class="card-header bg-gradient-success text-white d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ c.usuario.get_full_name|default:c.usuario.username }}</h5>
+                                    <span class="text-warning">
+                                        {% for i in rango_estrellas %}
+                                            <i class="bi bi-star{% if i <= c.puntaje %}-fill{% else %} text-white-50{% endif %}"></i>
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted text-justificado">{{ c.comentario|default:"Sin comentario." }}</p>
+                                </div>
+                                <div class="card-footer bg-transparent text-end text-muted small">
+                                    <i class="bi bi-clock me-1"></i>Actualizado hace {{ c.fecha_actualizacion|timesince }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        </section>
 
         <style>
             .hover-animate {

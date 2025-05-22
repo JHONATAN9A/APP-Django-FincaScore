@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
-from .models import FincaRecordModel,ExperienciaModel, EvaluacionFinca
-from .forms import FincaForm, RegistroForm,ExperienciaForm,EvaluacionFincaForm
+from .models import FincaRecordModel,ExperienciaModel, EvaluacionFinca, ComentarioFinca
+from .forms import FincaForm, RegistroForm,ExperienciaForm,EvaluacionFincaForm, ComentarioFincaForm
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -9,6 +9,17 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
+from django.db.models import Q  # importar para búsquedas flexibles
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+
+def lista_fincas(request):
+    query = request.GET.get('buscar')
+    if query:
+        fincas = FincaRecordModel.objects.filter(Q(lugar__icontains=query))
+    else:
+        fincas = FincaRecordModel.objects.all()
+    return render(request, 'index.html', {'fincas': fincas, 'query': query})
 
 def lista_fincas(request):
     fincas = FincaRecordModel.objects.all()  # trae todas las fincas
@@ -212,3 +223,48 @@ def lista_fincas_para_evaluar(request):
         })
 
     return render(request, 'evaluador/fincas_disponibles.html', {'fincas_info': fincas_info})
+@login_required
+def MasDetalles(request, finca_id):
+    finca = get_object_or_404(FincaRecordModel, id=finca_id)
+
+    comentario_existente = ComentarioFinca.objects.filter(finca=finca, usuario=request.user).first()
+    comentarios = finca.comentarios.exclude(usuario=request.user).order_by('-fecha_actualizacion')
+
+    if request.method == 'POST':
+        form = ComentarioFincaForm(request.POST, instance=comentario_existente)
+        if form.is_valid():
+            comentario = form.save(commit=False)
+            comentario.finca = finca
+            comentario.usuario = request.user
+            comentario.save()
+            return redirect('mas_detalles', finca_id=finca.id)
+    else:
+        form = ComentarioFincaForm(instance=comentario_existente)
+
+    return render(request, 'MasDetalles.html', {
+        'finca': finca,
+        'form_comentario': form,
+        'comentarios_usuarios': comentarios,
+        'comentario_existente': comentario_existente,
+        'rango_estrellas': range(1, 6),
+    })
+def lista_fincas(request):
+    query = request.GET.get('buscar')
+    resultados = []
+
+    if query:
+        resultados = FincaRecordModel.objects.filter(Q(lugar__icontains=query))
+
+    # Siempre mostrar la galería general
+    fincas = FincaRecordModel.objects.all()
+
+    return render(request, 'index.html', {
+        'fincas': fincas,
+        'query': query,
+        'resultados': resultados
+    })
+def buscar_fincas_parciales(request):
+    query = request.GET.get('buscar', '')
+    fincas = FincaRecordModel.objects.filter(lugar__icontains=query) if query else []
+    html = render_to_string('partials/lista_fincas_resultado.html', {'fincas': fincas})
+    return HttpResponse(html)
